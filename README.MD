@@ -31,7 +31,7 @@ docker-compose up --build
 
 ```bash
 # Configurar PostgreSQL local
-# Criar database: nubank
+# Criar database: cadastro
 
 # Executar aplicação
 ./mvnw spring-boot:run
@@ -72,4 +72,4 @@ Swagger UI disponível em: `http://localhost:8080/swagger-ui.html`
 
 Desenvolvido por **Fernando Rocha**  
 📍 Fortaleza - CE  
-🔗 [LinkedIn](https://www.linkedin.com/in/fernandorocha)
+🔗 [LinkedIn](https://www.linkedin.com/in/fernando-rocha-962465200/)
