@@ -1,0 +1,39 @@
+### Insere um cliente
+POST http://localhost:8080/clientes
+Content-Type: application/json
+
+{
+  "nome": "Fernando",
+  "contatos": [
+    {
+      "telefone": "8548125",
+      "email": "teste@gemail.com"
+    }
+  ]
+}
+
+### Inserir um cliente sem contato
+POST http://localhost:8080/clientes
+Content-Type: application/json
+
+{
+    "nome": "Bruno"
+}
+
+### Inserir um contato para o cliente
+POST http://localhost:8080/contatos
+Content-Type: application/json
+
+{
+    "telefone":"8597856798",
+    "email":"bruno@gmail.com",
+    "clienteId":5
+}
+
+### Listagem de todo os cliente com seus contatos
+GET http://localhost:8080/clientes
+Content-Type: application/json
+
+### Listagem de contatos de um cliente por ID
+GET http://localhost:8080/clientes/5/contatos
+Content-Type: application/json
