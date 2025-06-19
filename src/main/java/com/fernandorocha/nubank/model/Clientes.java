@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +22,13 @@ import lombok.Setter;
 public class Clientes {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     private String nome;
 
     @OneToMany(mappedBy = "clientes", cascade = { CascadeType.ALL }, orphanRemoval = true)
     @JsonManagedReference
-    private List<Object> contatos = new ArrayList<Object>();
+    private List<Contato> contatos = new ArrayList<Contato>();
 
 }
