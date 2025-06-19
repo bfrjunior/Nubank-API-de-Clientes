@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.fernandorocha.nubank.dto.ClientesDTO;
 import com.fernandorocha.nubank.dto.ClientesResponseDTO;
+import com.fernandorocha.nubank.dto.ContatoDTO;
 import com.fernandorocha.nubank.dto.ContatoReponseDTO;
 import com.fernandorocha.nubank.model.Clientes;
 import com.fernandorocha.nubank.model.Contato;
@@ -19,18 +20,14 @@ public class ClientesService {
     @Autowired
     private ClientesRepository clientesRepository;
 
-    private Clientes salvarClientes(ClientesDTO dto) {
+    public Clientes salvarClientes(ClientesDTO dto) {
         Clientes clientes = new Clientes();
         clientes.setNome(dto.getNome());
 
-        if (dto.getContatos() != null && dto.getContatos().size() > 0) {
-            List<Contato> contatos = dto.getContatos().stream().map(c -> {
-                Contato contato = new Contato();
-                contato.setTelefone(c.getTelefone());
-                contato.setEmail(c.getEmail());
-                contato.setClientes(clientes);
-                return contato;
-            }).collect(Collectors.toList());
+        if (dto.getContatos() != null && !dto.getContatos().isEmpty()) {
+            List<Contato> contatos = dto.getContatos().stream()
+                    .map(c -> criarContato(c, clientes))
+                    .collect(Collectors.toList());
             clientes.setContatos(contatos);
         }
 
@@ -38,37 +35,42 @@ public class ClientesService {
     }
 
     public List<ClientesResponseDTO> listarTodos() {
-        return clientesRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
-
+        return clientesRepository.findAll().stream()
+                .map(this::toClienteResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public List<ContatoReponseDTO> listarContatoPorCliente(Long clienteId) {
         Clientes cliente = clientesRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-        return cliente.getContatos().stream().map(c -> {
-            ContatoReponseDTO dto = new ContatoReponseDTO();
-            dto.setId(c.getId());
-            dto.setTelefone(c.getTelefone());
-            dto.setEmail(c.getEmail());
-            return dto;
-        }).collect(Collectors.toList());
-
+        return cliente.getContatos().stream()
+                .map(this::toContatoResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    private ClientesResponseDTO toDTO(Clientes cliente) {
+    private Contato criarContato(ContatoDTO contatoDTO, Clientes cliente) {
+        Contato contato = new Contato();
+        contato.setTelefone(contatoDTO.getTelefone());
+        contato.setEmail(contatoDTO.getEmail());
+        contato.setClientes(cliente);
+        return contato;
+    }
 
+    private ContatoReponseDTO toContatoResponseDTO(Contato contato) {
+        ContatoReponseDTO dto = new ContatoReponseDTO();
+        dto.setId(contato.getId());
+        dto.setTelefone(contato.getTelefone());
+        dto.setEmail(contato.getEmail());
+        return dto;
+    }
+
+    private ClientesResponseDTO toClienteResponseDTO(Clientes cliente) {
         ClientesResponseDTO dto = new ClientesResponseDTO();
         dto.setId(cliente.getId());
         dto.setNome(cliente.getNome());
-
-        List<ContatoReponseDTO> contatos = cliente.getContatos().stream().map(c -> {
-            ContatoReponseDTO contatoDTO = new ContatoReponseDTO();
-            contatoDTO.setTelefone(c.getTelefone());
-            contatoDTO.setEmail(c.getEmail());
-            return contatoDTO;
-        }).collect(Collectors.toList());
-        dto.setContatos(contatos);
-
+        dto.setContatos(cliente.getContatos().stream()
+                .map(this::toContatoResponseDTO)
+                .collect(Collectors.toList()));
         return dto;
     }
 }
