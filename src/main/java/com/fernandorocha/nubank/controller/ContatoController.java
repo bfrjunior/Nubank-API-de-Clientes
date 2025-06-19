@@ -13,6 +13,9 @@ import com.fernandorocha.nubank.model.Clientes;
 import com.fernandorocha.nubank.model.Contato;
 import com.fernandorocha.nubank.repository.ClientesRepository;
 import com.fernandorocha.nubank.repository.ContatoRepository;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,7 +30,7 @@ public class ContatoController {
     private ClientesRepository clientesRepository;
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody ContatoDTO dto) {
+    public ResponseEntity<?> criar(@RequestBody @Valid ContatoDTO dto) {
 
         Optional<Clientes> clientesOpt = clientesRepository.findById(dto.getClienteId());
 
